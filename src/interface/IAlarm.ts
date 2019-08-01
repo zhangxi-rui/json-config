@@ -1,0 +1,4 @@
+
+interface IAlarm {
+  alert(): void
+}

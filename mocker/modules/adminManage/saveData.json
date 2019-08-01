@@ -1,0 +1,9 @@
+{
+  "errNo": 0,
+  "errStr": "success",
+  "data": {
+    "id": 1,
+    "username": "kenny",
+    "sex": 6
+  }
+}

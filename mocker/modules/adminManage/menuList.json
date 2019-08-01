@@ -1,0 +1,7 @@
+{
+  "errNo": 0,
+  "errStr": "success",
+  "data": {
+    "list": [1, 2, 3, 4, 5]
+  }
+}

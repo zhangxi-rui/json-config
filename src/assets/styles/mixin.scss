@@ -1,0 +1,22 @@
+@mixin clearfix {
+  &:after {
+    content: '.';
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+}
+
+@mixin common-wrapper() {
+  height: 50px;
+  line-height: 50px;
+}
+
+@mixin common-img($height: 16px, $width: 16px) {
+  height: $height;
+  width: $width;
+  display: inline-block;
+  background-size: cover;
+  vertical-align: middle;
+}

@@ -1,0 +1,260 @@
+{
+  "errNo": 0,
+  "errstr": "success",
+  "data": {
+    "menuAuth": [
+      {
+        "authId": 12,
+        "menuName": "系统管理",
+        "description": null,
+        "parentId": 0,
+        "frontRouterUrl": "/admin",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 13,
+            "menuName": "用户管理",
+            "description": null,
+            "parentId": 12,
+            "backRouterUrl": "/admin/user-manage",
+            "frontRouterUrl": "/admin/user-manage",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          },
+          {
+            "authId": 13,
+            "menuName": "菜单管理",
+            "description": null,
+            "parentId": 12,
+            "backRouterUrl": "/admin/menu-manamge",
+            "frontRouterUrl": "/admin/menu-manamge",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          }
+        ]
+      },
+      {
+        "authId": 10,
+        "menuName": "课程中心",
+        "description": "/course-center",
+        "parentId": 0,
+        "frontRouterUrl": "/course-center",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 11,
+            "menuName": "一课课程",
+            "description": "/course-center/yike-course",
+            "parentId": 10,
+            "backRouterUrl": "/course-center/yike-course",
+            "frontRouterUrl": "/course-center/yike-course",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1
+          }
+        ]
+      },
+      {
+        "authId": 14,
+        "menuName": "订单中心",
+        "description": null,
+        "parentId": 0,
+        "frontRouterUrl": "/order-center",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 15,
+            "menuName": "一课订单",
+            "description": null,
+            "parentId": 14,
+            "backRouterUrl": "/order-center/yike-order",
+            "frontRouterUrl": "/order-center/yike-order",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          },
+          {
+            "authId": 16,
+            "menuName": "预约订单",
+            "description": null,
+            "parentId": 14,
+            "backRouterUrl": "/order-center/subscribe-order",
+            "frontRouterUrl": "/order-center/subscribe-order",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          },
+          {
+            "authId": 17,
+            "menuName": "数据值管理",
+            "description": null,
+            "parentId": 14,
+            "backRouterUrl": "/upms/dictionary/getdictionarylist",
+            "frontRouterUrl": "/data-dictionary/data-vaule-manage",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          }
+        ]
+      },
+      {
+        "authId": 18,
+        "menuName": "角色管理",
+        "description": null,
+        "parentId": 0,
+        "frontRouterUrl": "/role-manage",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 19,
+            "menuName": "角色列表",
+            "description": null,
+            "parentId": 18,
+            "backRouterUrl": "/upms/role/getrolelist",
+            "frontRouterUrl": "/role-manage/index",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          }
+        ]
+      },
+      {
+        "authId": 20,
+        "menuName": "数据权限组",
+        "description": null,
+        "parentId": 0,
+        "frontRouterUrl": "/data-permisson",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 21,
+            "menuName": "数据权限组管理",
+            "description": null,
+            "parentId": 20,
+            "backRouterUrl": "/upms/accountbook/getaccountbooklist",
+            "frontRouterUrl": "/data-permisson/index",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          }
+        ]
+      },
+      {
+        "authId": 22,
+        "menuName": "用户组管理",
+        "description": null,
+        "parentId": 0,
+        "frontRouterUrl": "/usergroup-manage",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 23,
+            "menuName": "用户组管理",
+            "description": null,
+            "parentId": 22,
+            "backRouterUrl": "/upms/group/getgrouplist",
+            "frontRouterUrl": "/usergroup-manage/index",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          }
+        ]
+      },
+      {
+        "authId": 24,
+        "menuName": "用户管理",
+        "description": null,
+        "parentId": 0,
+        "frontRouterUrl": "/user-manage",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 25,
+            "menuName": "用户列表",
+            "description": null,
+            "parentId": 24,
+            "backRouterUrl": "/upms/member/getmemberlist",
+            "frontRouterUrl": "/user-manage/index",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1,
+            "elementButtonList": []
+          }
+        ]
+      },
+      {
+        "authId": 26,
+        "menuName": "JSON数据",
+        "description": null,
+        "parentId": 0,
+        "frontRouterUrl": "/json",
+        "rank": 0,
+        "platformId": 10,
+        "status": 1,
+        "childrenPage": [
+          {
+            "authId": 27,
+            "menuName": "JSON配置",
+            "description": null,
+            "parentId": 26,
+            "backRouterUrl": "",
+            "frontRouterUrl": "/json/json-config",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1
+          }
+        ]
+      }
+    ],
+    "userInfo": {
+      "memberId": 1,
+      "uName": "tangpan",
+      "realName": "唐盼",
+      "phone": "18811703177",
+      "email": "tangpan@zuoyebang.com",
+      "employeeId": "Z001498",
+      "datetime": "2019-04-08",
+      "platformList": [
+        {
+          "platformId": 10,
+          "platformName": "通用权限管理系统",
+          "platformUrl": "http://mis.zuoyebang.cc/static/permission/index.html#/"
+        },
+        {
+          "platformId": 11,
+          "platformName": "物流系统",
+          "platformUrl": "http://www.zuoyebang.cc/static/logistics/index.html#/"
+        },
+        {
+          "platformId": 12,
+          "platformName": "直播售卖系统",
+          "platformUrl": "http://platmis.zuoyebang.cc/static/sellgoods/index.html#/home"
+        }
+      ]
+    }
+  }
+}
