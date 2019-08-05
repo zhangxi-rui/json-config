@@ -98,25 +98,6 @@ const dataTree = [
     selectType: 'object',
     nodeType: 'root',
     children: [
-      // {
-      //   id: 2,
-      //   nodeKey: 'itemList1',
-      //   nodeValue: '',
-      //   selectType: 'object',
-      //   parent: 'object',
-      //   nodeType: 'child',
-      //   children: [
-      //     {
-      //       id: 3,
-      //       nodeKey: 'item1',
-      //       nodeValue: 'value1',
-      //       selectType: 'string',
-      //       parent: 'object',
-      //       nodeType: 'child'
-      //     },
-      //     { nodeType: 'add' }
-      //   ]
-      // },
       {
         id: 9,
         nodeKey: 'itemList1',
@@ -169,25 +150,25 @@ export default class JsonConfig extends Vue {
   selectType = selectType
   jsonObj: any
   handleInputKey ($event: any, node: any, data: any) {
-    console.log($event.target.innerText)
-    console.log(data)
+    // console.log($event.target.innerText)
+    // console.log(data)
     data.nodeKey = $event.target.innerText
     // data.nodeValue = $event.target.innerText
   }
   handleInputValue ($event: any, node: any, data: any) {
-    console.log($event.target.innerText)
-    console.log(data)
+    // console.log($event.target.innerText)
+    // console.log(data)
     data.nodeValue = $event.target.innerText
     // data.nodeValue = $event.target.innerText
   }
   handlerMouseEnter (event: any, node: any, data: any) {
-    console.log('触发了enter')
+    // console.log('触发了enter')
     event.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.backgroundColor = 'yellow'
-    console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode)
+    // console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode)
     // console.log(node)
   }
   handlerMouseLeave (event: any, node: any, data: any) {
-    console.log('触发了leave')
+    // console.log('触发了leave')
 
     event.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.backgroundColor = ''
     // console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode.style)
@@ -296,7 +277,7 @@ export default class JsonConfig extends Vue {
     children.splice(index, 1)
   }
   add (event: any, node: any, data: any) {
-    console.log('触发了CLICK')
+    // console.log('触发了CLICK')
     let newChildObject = { id: id++, nodeKey: 'key', nodeValue: 'value', selectType: 'string', parent: 'object', nodeType: 'child' }
     let newChildArray: object
     if (!node.parent.data.children) {
@@ -308,7 +289,7 @@ export default class JsonConfig extends Vue {
       // node.parent.data.children.push(newChildObject, { nodeType: 'add' })
       node.parent.data.children.splice(index, 0, newChildObject)
     } else {
-      let arrayId = node.parent.data.children.length
+      let arrayId = node.parent.data.children.length - 1
       newChildArray = { id: id++, nodeKey: arrayId, nodeValue: 'value', selectType: 'string', parent: 'array', nodeType: 'child' }
       node.parent.data.children.splice(index, 0, newChildArray)
       // node.parent.data.children.push(newChildArray, { nodeType: 'add' })
