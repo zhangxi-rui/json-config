@@ -1,5 +1,6 @@
 <template>
   <div class="json_page">
+    <!-- <div class="json_show"></div> -->
     <div class="json_config">
       <el-tree
         :data="dataTree"
@@ -18,18 +19,28 @@
           >
             <span class="flexText">
               <p
-                contenteditable="true"
+                :contenteditable="data.isEdit"
                 class="text-input"
                 v-text="data.nodeKey"
-                @input="handleInputKey(...arguments, node, data)"
+                @blur="handleInputKey(...arguments, node, data)"
               >
               </p>
+
               <span v-if="data.selectType==='string'"> : </span>
+              <span
+                v-if="data.selectType==='object'"
+                style="color:red;display:inline-block;padding-left:10px"
+              > <span>{</span><span>{{data.children.length-1}}</span>}<span></span></span>
+              <span
+                v-if="data.selectType==='array'"
+                style="color:red;display:inline-block;padding-left:10px"
+              > <span>[</span><span>{{data.children.length-1}}</span>]<span></span></span>
               <p
+                v-if="data.selectType==='string'"
                 contenteditable="true"
                 class="text-input"
                 v-text="data.nodeValue"
-                @input="handleInputValue(...arguments, node, data)"
+                @blur="handleInputValue(...arguments, node, data)"
               ></p>
             </span>
             <span class="flex">
@@ -45,6 +56,21 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
+              <div
+                class="copy"
+                @mouseenter="handlerMouseEnter(...arguments,node,data)"
+                @mouseleave="handlerMouseLeave(...arguments,node,data)"
+              >
+                <el-button
+                  v-if="data.nodeType!=='root'"
+                  size="mini"
+                  class="primary"
+                  @click="() => copy(node,data)"
+                  title="复制"
+                ><i class="zyb-icon-common-note-o">
+                  </i>
+                </el-button>
+              </div>
               <div class="delete">
                 <el-button
                   v-if="data.nodeType!=='root'"
@@ -90,33 +116,42 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 let id = 5
+const res = {
+  a: 1,
+  b: {
+    b1: 'b11111',
+    b2: [1, '2bbb']
+  },
+  c: ['c1', ['c2111', 2, 'c2333'], { c4: '444', c5: '666' }, 'c3']
+}
 const dataTree = [
   {
     id: 1,
-    nodeKey: 'itemObj',
+    nodeKey: 'object',
     nodeValue: '',
     selectType: 'object',
     nodeType: 'root',
+    isEdit: false,
     children: [
-      {
-        id: 9,
-        nodeKey: 'itemList1',
-        nodeValue: '',
-        selectType: 'array',
-        parent: 'object',
-        nodeType: 'child',
-        children: [
-          {
-            id: 10,
-            nodeKey: '0',
-            nodeValue: 'value1',
-            selectType: 'string',
-            parent: 'array',
-            nodeType: 'child'
-          },
-          { nodeType: 'add' }
-        ]
-      },
+      // {
+      //   id: 9,
+      //   nodeKey: 'itemList1',
+      //   nodeValue: '',
+      //   selectType: 'array',
+      //   parent: 'object',
+      //   nodeType: 'child',
+      //   children: [
+      //     {
+      //       id: 10,
+      //       nodeKey: '0',
+      //       nodeValue: 'value1',
+      //       selectType: 'string',
+      //       parent: 'array',
+      //       nodeType: 'child'
+      //     },
+      //     { nodeType: 'add' }
+      //   ]
+      // },
       // {
       //   id: 4,
       //   nodeKey: 'item2',
@@ -148,25 +183,31 @@ let selectType = [
 export default class JsonConfig extends Vue {
   dataTree = dataTree
   selectType = selectType
+  // isEdit = true
   jsonObj: any
+  // 绑定输入框与键盘输入数据的属性名
   handleInputKey ($event: any, node: any, data: any) {
-    // console.log($event.target.innerText)
+    console.log($event)
     // console.log(data)
     data.nodeKey = $event.target.innerText
+    console.log(this.dataTree)
     // data.nodeValue = $event.target.innerText
   }
+  // 绑定输入框与键盘输入数据的属性值
   handleInputValue ($event: any, node: any, data: any) {
     // console.log($event.target.innerText)
     // console.log(data)
     data.nodeValue = $event.target.innerText
     // data.nodeValue = $event.target.innerText
   }
+  // 模拟hover，鼠标放到添加时高亮
   handlerMouseEnter (event: any, node: any, data: any) {
     // console.log('触发了enter')
     event.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.backgroundColor = 'yellow'
     // console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode)
     // console.log(node)
   }
+  // 模拟hover，鼠标移出添加时去除高亮
   handlerMouseLeave (event: any, node: any, data: any) {
     // console.log('触发了leave')
 
@@ -175,6 +216,94 @@ export default class JsonConfig extends Vue {
 
     // console.log(node)
   }
+  // json转dataTree
+  objectOneLayer (res: any) {
+    console.log('res----->>>', res)
+    let dataTreeChild: any = []
+    let keyArray = Object.keys(res)
+    keyArray.forEach((key: any) => {
+      console.log('类型--->>', Object.prototype.toString.call(res[key]))
+      if (Object.prototype.toString.call(res[key]) === '[object Object]') {
+        if (Object.prototype.toString.call(res) === '[object Object]') {
+          dataTreeChild.push({
+            id: id++,
+            nodeKey: key,
+            nodeValue: '',
+            selectType: 'object',
+            parent: 'object',
+            nodeType: 'child',
+            isEdit: true,
+            children: this.objectOneLayer(res[key])
+          })
+        } else {
+          dataTreeChild.push({
+            id: id++,
+            nodeKey: key,
+            nodeValue: '',
+            selectType: 'object',
+            parent: 'array',
+            nodeType: 'child',
+            isEdit: false,
+            children: this.objectOneLayer(res[key])
+          })
+        }
+      } else if (Object.prototype.toString.call(res[key]) === '[object Array]') {
+        if (Object.prototype.toString.call(res) === '[object Object]') {
+          dataTreeChild.push({
+            id: id++,
+            nodeKey: key,
+            nodeValue: '',
+            selectType: 'array',
+            parent: 'object',
+            nodeType: 'child',
+            isEdit: true,
+            children: this.objectOneLayer(res[key])
+          })
+        } else {
+          dataTreeChild.push({
+            id: id++,
+            nodeKey: key,
+            nodeValue: '',
+            selectType: 'array',
+            parent: 'array',
+            nodeType: 'child',
+            isEdit: false,
+            children: this.objectOneLayer(res[key])
+          })
+        }
+      } else {
+        if (Object.prototype.toString.call(res) === '[object Object]') {
+          dataTreeChild.push({ id: id++, nodeKey: key, nodeValue: res[key], selectType: 'string', parent: 'object', nodeType: 'child', isEdit: true })
+        } else {
+          dataTreeChild.push({ id: id++, nodeKey: key, nodeValue: res[key], selectType: 'string', parent: 'array', nodeType: 'child', isEdit: false })
+        }
+      }
+    })
+    dataTreeChild.push({ nodeType: 'add' })
+    return dataTreeChild
+  }
+  dataTreeCreate (res: any) {
+    if (Object.prototype.toString.call(res) === '[object String]' || Object.prototype.toString.call(res) === '[object Number]') {
+      this.dataTree[0].nodeKey = 'string'
+      this.dataTree[0].nodeValue = res
+      this.dataTree[0].selectType = 'string'
+    } else {
+      if (Object.prototype.toString.call(res) === '[object Object]') {
+        this.dataTree[0].nodeKey = 'object'
+        this.dataTree[0].selectType = 'object'
+        this.dataTree[0].children = this.objectOneLayer(res)
+      } else {
+        this.dataTree[0].nodeKey = 'array'
+        this.dataTree[0].selectType = 'array'
+        this.dataTree[0].children = this.objectOneLayer(res)
+      }
+    }
+  }
+  mounted () {
+    // this.dataTreeCreate(res)
+  }
+
+  // dataTree转json
   jsonArray (dataTree: any) {
     let jsonArray: any = []
     let array: any = []
@@ -183,7 +312,7 @@ export default class JsonConfig extends Vue {
         if (!data.children) {
           jsonArray.push(data.nodeValue)
         } else {
-          jsonArray[data.nodeKey] = this.jsonCreate(data.children)
+          jsonArray[data.nodeKey] = this.jsonCreate([data])
         }
       }
     })
@@ -199,33 +328,17 @@ export default class JsonConfig extends Vue {
         console.log('value.children--->>', value.children)
         if (value.selectType === 'object') {
           console.log('objjjjjjjjjjjjjj')
-          jsonObject[value.nodeKey] = this.jsonCreate(value.children)
+          if (value.parent !== 'array') {
+            jsonObject[value.nodeKey] = this.jsonCreate(value.children)
+          } else {
+            jsonObject = this.jsonCreate(value.children)
+          }
         } else if (value.selectType === 'array') {
-          jsonObject[value.nodeKey] = this.jsonArray(value)
-          /// ///////////////////////////////////////////////////////////////////////////
-          // let array: any = []
-          // jsonObject[value.nodeKey] = []
-          // value.children.forEach((data: any, index: number) => {
-          //   if (index < value.children.length - 1) {
-          //     if (!data.children) {
-          //       jsonObject[value.nodeKey].push(data.nodeValue)
-          //       console.log('非嵌套数组--->>>', jsonObject[value.nodeKey])
-          //     } else {
-          //       jsonObject[value.nodeKey] = array.push(this.jsonCreate(data.children))
-          //       console.log('嵌套数组--->>>', this.jsonCreate(data.children))
-          //     }
-          //     // array[array.length] = this.jsonCreate(value.children)
-          //   }
-          //   console.log('array--->>>', array)
-          // })
-          /// ////////////////////////////////////////////////////////////////////////////
-          // jsonObject[value.nodeKey] = array
-          // jsonObject[value.nodeKey].push(this.jsonCreate(value.children))
-          // console.log('jsonObject[value.nodeKey]--->', jsonObject[value.nodeKey])
-          // let jsonArray = []
-          // jsonArray.push(this.jsonCreate(value.children))
-          // jsonObject[value.nodeKey] = jsonArray
-          // jsonObject[value.nodeKey].push(jsonArray)
+          if (value.parent !== 'array') {
+            jsonObject[value.nodeKey] = this.jsonArray(value)
+          } else {
+            jsonObject = this.jsonArray(value)
+          }
         } else {
           // 递归终点，没有children
           if (value.parent === 'object') {
@@ -244,6 +357,7 @@ export default class JsonConfig extends Vue {
     console.log('jsonObject---->>', jsonObject)
     return jsonObject
   }
+  // 提交json的修改，提交按钮的事件
   submitJson () {
     console.log('this.dataTree----->>', this.dataTree)
     if (!this.dataTree[0].children) {
@@ -251,34 +365,25 @@ export default class JsonConfig extends Vue {
     } else {
       let obj = this.jsonCreate(this.dataTree)
       this.jsonObj = obj[this.dataTree[0].nodeKey]
-      // console.log(this.dataTree[0].children)
-      // if (this.dataTree[0].selectType === 'object') {
-      //   this.jsonObj = obj
       console.log('this.jsonObj----->>>', this.jsonObj)
-      // } else {
-      // console.log('length--->>', this.jsonObj)
-      // obj = Object.assign(obj, { length: Object.keys(obj).length })
-      // this.jsonObj = Array.from(obj)
-      // }
     }
-    // this.dataTree.forEach((value: any, index: any) => {
-    //   console.log(value['children'])
-    // })
-    // console.log(this.jsonObj)
   }
+  // 下面均为样式中添加或修改数据结构类型的逻辑函数
   findItemIndex (node: any, data: any): any {
     const parent = node.parent
     const children = parent.data.children || parent.data
     const index = children.findIndex((d: any) => d.id === data.id)
     return { index, children }
   }
+  // 移除节点
   remove (node: any, data: any) {
     const { index, children } = this.findItemIndex(node, data)
     children.splice(index, 1)
   }
+  // 添加节点
   add (event: any, node: any, data: any) {
     // console.log('触发了CLICK')
-    let newChildObject = { id: id++, nodeKey: 'key', nodeValue: 'value', selectType: 'string', parent: 'object', nodeType: 'child' }
+    let newChildObject = { id: id++, nodeKey: 'key', nodeValue: 'value', selectType: 'string', parent: 'object', nodeType: 'child', isEdit: true }
     let newChildArray: object
     if (!node.parent.data.children) {
       this.$set(node.parent.data, 'children', [])
@@ -290,51 +395,130 @@ export default class JsonConfig extends Vue {
       node.parent.data.children.splice(index, 0, newChildObject)
     } else {
       let arrayId = node.parent.data.children.length - 1
-      newChildArray = { id: id++, nodeKey: arrayId, nodeValue: 'value', selectType: 'string', parent: 'array', nodeType: 'child' }
+      newChildArray = { id: id++, nodeKey: arrayId, nodeValue: 'value', selectType: 'string', parent: 'array', nodeType: 'child', isEdit: false }
       node.parent.data.children.splice(index, 0, newChildArray)
       // node.parent.data.children.push(newChildArray, { nodeType: 'add' })
     }
   }
+  // 复制节点
+  copy (node: any, data: any) {
+    console.log('复制类型---->>', data)
+    const { index, children } = this.findItemIndex(node, data)
+    let obj = JSON.parse(JSON.stringify(data))
+    obj.id = id++
+    children.splice(index + 1, 0, obj)
+  }
+  // 改变节点类型
   dataTreeChange (node: any, data: any) {
     const { index, children } = this.findItemIndex(node, data)
+    console.log('切换类型---->>', data)
+    console.log('index---->>', index)
+    // 改变类型为string
     if (data.selectType === 'string') {
-      children.splice(index, 1, { id: id++, nodeKey: 'key', nodeValue: '', selectType: 'string', parent: node.parent.data.selectType, nodeType: 'child' })
-      // children[index].selectType = 'string'
-    } else if (data.selectType === 'object') {
-      // children.splice(index, 1, { id: id++, nodeKey: '', nodeValue: '', selectType: 'object', nodeType: 'child', children: [{ nodeType: 'add' }] })
-      if (!data.children) {
-        let key = data.nodeKey
+      // 为根节点时，根节点变为string，key不可编辑
+      if (!data.parent) {
+        children.splice(index, 1, { id: id++, nodeKey: 'sting', nodeValue: 'value', selectType: 'string', nodeType: 'root', isEdit: false })
+      } else {
+        // 为子节点时，根节点变为string，key可编辑
         children.splice(index, 1, {
           id: id++,
-          nodeKey: key,
-          nodeValue: '',
-          selectType: 'object',
+          nodeKey: 'key',
+          nodeValue: 'value',
+          selectType: 'string',
           parent: node.parent.data.selectType,
           nodeType: 'child',
-          children: [{ nodeType: 'add' }]
-        })
-      } else {
-        // data.selectType = 'object'
-        data.children.forEach((element: any) => {
-          element.parent = 'object'
+          isEdit: true
         })
       }
-    } else {
-      if (!data.children) {
-        let key = data.nodeKey
-        children.splice(index, 1, {
-          id: id++,
-          nodeKey: key,
-          nodeValue: '',
-          selectType: 'array',
-          parent: node.parent.data.selectType,
-          nodeType: 'child',
-          children: [{ nodeType: 'add' }]
-        })
+    }
+    // 节点类型变为object时，父节点若为array，节点的key不可编辑
+    else if (data.selectType === 'object') {
+      let edit: boolean
+      if (data.parent === 'array' || !data.parent) {
+        edit = false
       } else {
+        edit = true
+      }
+      // 原来无children，原类型为string
+      if (!data.children) {
+        // 操作节点为根节点
+        if (!data.parent) {
+          children.splice(index, 1, {
+            id: id++,
+            nodeKey: 'object',
+            nodeValue: '',
+            selectType: 'object',
+            nodeType: 'root',
+            isEdit: edit,
+            children: [{ nodeType: 'add' }]
+          })
+        } else {
+          let key = data.nodeKey
+
+          children.splice(index, 1, {
+            id: id++,
+            nodeKey: key,
+            nodeValue: '',
+            selectType: 'object',
+            parent: node.parent.data.selectType,
+            nodeType: 'child',
+            isEdit: edit,
+            children: [{ nodeType: 'add' }]
+          })
+        }
+      } else {
+        if (!data.parent) {
+          data.nodeKey = 'object'
+        }
+        data.isEdit = edit
+        data.children.forEach((element: any) => {
+          element.parent = 'object'
+          element.isEdit = true
+        })
+      }
+    }
+    // 节点类型为array时，父节点若为array，节点的key不可编辑
+    else {
+      let edit: boolean
+      console.log('children.parent--->>', data.parent)
+      if (data.parent === 'array' || !data.parent) {
+        edit = false
+      } else {
+        edit = true
+      }
+      if (!data.children) {
+        if (!data.parent) {
+          children.splice(index, 1, {
+            id: id++,
+            nodeKey: 'array',
+            nodeValue: '',
+            selectType: 'array',
+            nodeType: 'root',
+            isEdit: edit,
+            children: [{ nodeType: 'add' }]
+          })
+        } else {
+          let key = data.nodeKey
+          children.splice(index, 1, {
+            id: id++,
+            nodeKey: key,
+            nodeValue: '',
+            selectType: 'array',
+            parent: node.parent.data.selectType,
+            nodeType: 'child',
+            isEdit: edit,
+            children: [{ nodeType: 'add' }]
+          })
+        }
+      } else {
+        if (!data.parent) {
+          data.nodeKey = 'array'
+        }
+        data.isEdit = edit
         data.children.forEach((element: any, index: number) => {
           element.nodeKey = index
           element.parent = 'array'
+          element.isEdit = false
         })
       }
     }
@@ -349,7 +533,7 @@ export default class JsonConfig extends Vue {
 }
 .json_config {
   margin-left: 200px;
-  width: 500px;
+  width: 700px;
   padding: 10px;
   border: 1px solid black;
 }
@@ -391,7 +575,11 @@ export default class JsonConfig extends Vue {
 }
 .json_config .delete {
   display: inline-block;
-  padding-left: 10px;
+  margin-left: 10px;
+}
+.json_config .copy {
+  display: inline-block;
+  margin-left: 10px;
 }
 .json_config .primary {
   background-color: #afb0b3;
@@ -406,7 +594,7 @@ export default class JsonConfig extends Vue {
 .json_config .flex {
   display: flex;
   align-items: center;
-  width: 150px;
+  width: 200px;
   background-color: aquamarine;
   padding-left: 30px;
 }

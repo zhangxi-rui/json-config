@@ -1,7 +1,13 @@
 <template>
-  <section class="app-main" :class="{'is-collapse':isCollapse}">
-    <transition name="fade-transform" mode="out-in">
-      <router-view/>
+  <section
+    class="app-main"
+    :class="{'is-collapse':isCollapse}"
+  >
+    <transition
+      name="fade-transform"
+      mode="out-in"
+    >
+      <router-view />
     </transition>
   </section>
 </template>
@@ -30,7 +36,7 @@ export default class Appmain extends Vue {
 <style lang="scss" scoped>
 .app-main {
   position: relative;
-  overflow: hidden;
+  overflow: auto;
   box-sizing: border-box;
   height: 100%;
   padding: 66px 16px 16px;

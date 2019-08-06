@@ -19,7 +19,7 @@ import CourseCenter from './modules/course-center'
 import JsonConfig from './modules/json-config'
 Vue.use(Router)
 // 常量路由
-export const constantRouterMap = [Admin, OrderCenter, CourseCenter, JsonConfig]
+export const constantRouterMap = [JsonConfig]
 // 去路由中心化的 路由
 // export const otherRouter = getRoutes()
 
