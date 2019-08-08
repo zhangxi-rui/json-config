@@ -12,14 +12,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // sync
-import Admin from './modules/admin'
-import getRoutes from './modules/index'
-import OrderCenter from './modules/order-center'
-import CourseCenter from './modules/course-center'
 import JsonConfig from './modules/json-config'
+import ModulesConfig from './modules/modules-config'
 Vue.use(Router)
 // 常量路由
-export const constantRouterMap = [JsonConfig]
+export const constantRouterMap = [ModulesConfig]
 // 去路由中心化的 路由
 // export const otherRouter = getRoutes()
 

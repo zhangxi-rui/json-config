@@ -53,22 +53,22 @@ module.exports = {
     },
     proxy: {
       // yapi mock
-      '/mock': {
-        target: 'http://yapi.afpai.com/mock/95/',
+      '/paybalance': {
+        target: 'http://yapi.afpai.com/mock/274/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
           '^/mock': '/'
         }
       }
-    },
-    before (app) {
-      apiMocker(app, path.resolve('./mocker/index.js'), {
-        proxy: {
-          '/mock/*': `http://localhost:${port}/`
-        },
-        changeHost: true
-      })
     }
+    // before (app) {
+    //   apiMocker(app, path.resolve('./mocker/index.js'), {
+    //     proxy: {
+    //       '/mock/*': `http://localhost:${port}/`
+    //     },
+    //     changeHost: true
+    //   })
+    // }
   }
 }

@@ -4,22 +4,33 @@
   "data": {
     "menuAuth": [
       {
-        "authId": 26,
-        "menuName": "JSON数据",
+        "authId": 20,
+        "menuName": "模块配置",
         "description": null,
         "parentId": 0,
-        "frontRouterUrl": "/json",
+        "frontRouterUrl": "/modules-config",
         "rank": 0,
         "platformId": 10,
         "status": 1,
         "childrenPage": [
           {
-            "authId": 27,
-            "menuName": "JSON配置",
+            "authId": 21,
+            "menuName": "paymis配置",
             "description": null,
-            "parentId": 26,
+            "parentId": 20,
             "backRouterUrl": "",
-            "frontRouterUrl": "/json/json-config",
+            "frontRouterUrl": "/modules-config/paymis",
+            "rank": 0,
+            "platformId": 10,
+            "status": 1
+          },
+          {
+            "authId": 22,
+            "menuName": "paybalance配置",
+            "description": null,
+            "parentId": 20,
+            "backRouterUrl": "",
+            "frontRouterUrl": "/modules-config/paybalance",
             "rank": 0,
             "platformId": 10,
             "status": 1

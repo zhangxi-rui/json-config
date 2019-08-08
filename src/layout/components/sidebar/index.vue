@@ -34,6 +34,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Getter, Action } from 'vuex-class'
+import menuList from '../../../../mocker/modules/userMock/getuserinfo.json'
 
 // 图标
 const icons = {
@@ -45,12 +46,12 @@ const icons = {
 export default class SiderBar extends Vue {
   /* ====== vuex ====== */
   @Getter('sidebar') sidebar: any
-  @Getter('menuList') menuList: any // 菜单
+  // @Getter('menuList') menuList: any // 菜单
 
   /* ====== data start ====== */
   defaultIcons: string = 'zyb-icon-nav-order'
   // icons: any[] = icons
-
+  menuList: any = menuList.data.menuAuth
   /* ====== computed start ====== */
   get isCollapse () {
     return !this.sidebar.opened
@@ -64,6 +65,7 @@ export default class SiderBar extends Vue {
 
   /* ====== hook start ====== */
   mounted () {
+    console.log('menuList--->', this.menuList)
     console.log(this.$moment)
     this.$log()
   }
