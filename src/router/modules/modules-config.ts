@@ -1,7 +1,6 @@
 import Layout from '@/layout/index.vue'
 const JsonConfig = () => import('@/views/json-config/index.vue')
-const Paymis = () => import('@/views/modules-config/paymis/index.vue')
-const Paybalance = () => import('@/views/modules-config/paybalance/index.vue')
+
 export default {
   path: '/',
   name: 'modules-config',
