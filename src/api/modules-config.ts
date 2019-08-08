@@ -16,3 +16,12 @@ export function getModuleConfig (params: Object) {
     params
   })
 }
+
+// 创建更新模块
+export function createUpdate (data: object) {
+  return request({
+    url: '/paybalance/tools/updateform',
+    method: 'post',
+    data
+  })
+}

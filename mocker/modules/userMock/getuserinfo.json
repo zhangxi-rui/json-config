@@ -5,7 +5,7 @@
     "menuAuth": [
       {
         "authId": 20,
-        "menuName": "模块配置",
+        "menuName": "系统配置",
         "description": null,
         "parentId": 0,
         "frontRouterUrl": "/modules-config",
@@ -15,7 +15,7 @@
         "childrenPage": [
           {
             "authId": 21,
-            "menuName": "paymis配置",
+            "menuName": "支付系统",
             "description": null,
             "parentId": 20,
             "backRouterUrl": "",
@@ -26,7 +26,7 @@
           },
           {
             "authId": 22,
-            "menuName": "paybalance配置",
+            "menuName": "财务系统",
             "description": null,
             "parentId": 20,
             "backRouterUrl": "",

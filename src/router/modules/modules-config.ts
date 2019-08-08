@@ -9,7 +9,7 @@ export default {
   component: Layout,
   redirect: '/modules-config/paymis',
   meta: {
-    menuName: '模块配置'
+    menuName: '系统配置'
   },
   children: [
     {
@@ -17,7 +17,7 @@ export default {
       name: 'paymis',
       component: JsonConfig,
       meta: {
-        menuName: 'paymis配置',
+        menuName: '支付系统',
         systemId: 'paymis'
       }
     }, {
@@ -25,7 +25,7 @@ export default {
       name: 'paybalance',
       component: JsonConfig,
       meta: {
-        menuName: 'paybalance配置',
+        menuName: '财务系统',
         systemId: 'paybalance'
       }
     }

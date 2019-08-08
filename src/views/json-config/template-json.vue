@@ -206,7 +206,7 @@ export default class TemplateJson extends Vue {
   selectType = selectType
   jsonObj: any = ''
   // jsonObj: any = ''
-  @Prop(Array) json: any
+  @Prop(String) json: any
   // isEdit = true
   // jsonObj: any
   // 绑定输入框与键盘输入数据的属性名
