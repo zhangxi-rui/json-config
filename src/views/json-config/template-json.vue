@@ -1,30 +1,5 @@
 <template>
-  <div class="json_page">
-    <div class="json_show">
-      <el-input
-        type="textarea"
-        :rows=14
-        v-model="json"
-      ></el-input>
-    </div>
-    <div class="json_button">
-      <div class="submit-json">
-        <el-button
-          @click="transformJson"
-          type="primary"
-          size="mini"
-          title="解析JSON"
-        ><i class="zyb-icon-direction-arrow-right"></i></el-button>
-      </div>
-      <div class="transform-json">
-        <el-button
-          @click="submitJson"
-          type="primary"
-          size="mini"
-          title="转成JSON"
-        ><i class="zyb-icon-direction-arrow-left"></i></el-button>
-      </div>
-    </div>
+  <div class="json_page">  
     <div class="json_config">
       <el-tree
         :data="dataTree"
@@ -127,6 +102,27 @@
 
       </el-tree>
 
+    </div>
+    <div class="json_button">
+      <el-button
+        @click="transformJson"
+        type="primary"
+        size="mini"
+        title="解析JSON"
+      ><i class="zyb-icon-direction-arrow-up"></i></el-button>
+      <el-button
+        @click="submitJson"
+        type="primary"
+        size="mini"
+        title="转成JSON"
+      ><i class="zyb-icon-direction-arrow-down"></i></el-button>      
+    </div>
+    <div class="json_show">
+      <el-input
+        type="textarea"
+        :rows=14
+        v-model="json"
+      ></el-input>
     </div>
 
   </div>
@@ -564,24 +560,25 @@ export default class TemplateJson extends Vue {
 
 <style>
 .json_page {
-  display: flex;
+  /* display: flex; */
   background-color: white;
   padding: 30px;
 }
 .json_button {
-  width: 50px;
-  margin: 10px 0;
+  /* width: 50px; */
+  /* margin: 10px 0; */
+  text-align: center;
 }
 .json_show {
-  width: 40%;
+  /* width: 40%; */
   margin: 10px;
 }
 .json_config {
-  width: 55%;
+  /* width: 55%; */
   margin-left: 20px;
   margin: 10px;
   border: 1px solid black;
-  height: 300px;
+  height: 500px;
   overflow: auto;
 }
 .tree-node {

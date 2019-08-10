@@ -30,5 +30,9 @@ module.exports = {
   test284: {
     receiver: 'http://test284-docker.suanshubang.com/release.php',
     toPath: '/home/homework/webroot/static/payblance'
+  },
+  test225: {
+    receiver: 'http://test225.suanshubang.com/fisreceiver.php',
+    toPath:'/home/homework/webroot/static/paybalance'
   }
 }

@@ -34,7 +34,8 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Getter, Action } from 'vuex-class'
-import menuList from '../../../../mocker/modules/userMock/getuserinfo.json'
+const menuList = require('../../../../mocker/modules/userMock/getuserinfo.json')
+// import menuList from '../../../../mocker/modules/userMock/getuserinfo.json'
 
 // 图标
 const icons = {
@@ -53,6 +54,7 @@ export default class SiderBar extends Vue {
   // icons: any[] = icons
   menuList: any = menuList.data.menuAuth
   /* ====== computed start ====== */
+
   get isCollapse () {
     return !this.sidebar.opened
   }

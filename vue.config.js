@@ -23,7 +23,7 @@ module.exports = {
   lintOnSave: false,
   publicPath: './', // 相对于index.html文件找静态资源路径
   outputDir: 'dist',
-  assetsDir: 'static', // 静态资源目录(js,css,fonts)
+  assetsDir: './static', // 静态资源目录(js,css,fonts)
   productionSourceMap: false,
   chainWebpack: config => {
     config.output.filename = assetsPath('js/[name].[chunkhash].js')

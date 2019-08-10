@@ -3,6 +3,7 @@
     "target": "es5",
     "module": "esnext",
     "strict": true,
+    "noImplicitAny": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -10,6 +11,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "types": ["webpack-env"],
     "paths": {
@@ -17,6 +19,6 @@
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "src/types/vue-global.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "src/types/vue-global.d.ts", "src/utils/request.js"],
   "exclude": ["node_modules"]
 }

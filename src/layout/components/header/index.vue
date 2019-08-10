@@ -102,20 +102,25 @@ export default class AppHeader extends Vue {
 
   // created hook
   created () {
-    this.GetUserInfo().then((res: any) => {
-      console.log(res)
-      let { memberId, uName, realName, phone, email, employeeId, datetime, platformList } = res
-      this.platformList = platformList
-      this.userInfo = {
-        memberId,
-        uName,
-        realName,
-        phone,
-        email,
-        employeeId,
-        datetime
-      }
-    })
+    // let res = this.GetUserInfo()
+    // console.log('sdafasfss--->>>',res)
+    // this.GetUserInfo().then((res: any) => {
+    //   console.log(res)
+    //   let { memberId, uName, realName, phone, email, employeeId, datetime, platformList } = res
+    //   this.platformList = platformList
+    //   this.userInfo = {
+    //     memberId,
+    //     uName,
+    //     realName,
+    //     phone,
+    //     email,
+    //     employeeId,
+    //     datetime
+    //   }
+
+
+    // })
+    console.log('this.userInfo---->>',this.userInfo)
   }
 
   // methods
@@ -131,7 +136,8 @@ export default class AppHeader extends Vue {
   }
 
   quit () {
-    window.location.href = `${location.protocol}//${location.hostname}/upms/login/logout`
+    // window.location.href = `${location.protocol}//${location.hostname}/upms/login/logout`
+    window.location.href = `${location.protocol}//${location.hostname}/paybalance/login/logout`
   }
 
   collapse () {

@@ -9,12 +9,15 @@ import './permission.ts'
 import '@/assets/styles/index.scss'
 // 挂在属性或者方法
 import Moment from './inject' // global css
+// import {getUserinfo} from './api/user-info'
 // 作业帮pc组件库  http://fe.suanshubang.com/npm/#/detail/zyb-pc-ui
 Vue.use(ZybPcUi)
 Vue.use(Moment)
 // Vue.prototype.$moment = { a: 1 }
 
 Vue.config.productionTip = false
+
+// getUserinfo()
 
 new Vue({
   router,
