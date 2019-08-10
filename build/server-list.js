@@ -33,6 +33,6 @@ module.exports = {
   },
   test225: {
     receiver: 'http://test225.suanshubang.com/fisreceiver.php',
-    toPath:'/home/homework/webroot/static/paybalance'
+    toPath: '/home/homework/webroot/static/paybalance'
   }
 }

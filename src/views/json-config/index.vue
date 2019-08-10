@@ -10,13 +10,13 @@
     <div class="select-operate">
       <div class="select-module">
         <span>模块选择：</span>
-        <el-select 
-          v-model="formKey" 
-          size="small" 
+        <el-select
+          v-model="formKey"
+          size="small"
           @change="change"
           placeholder="请选择模块"
         >
-          <el-option 
+          <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
@@ -120,13 +120,13 @@ export default class JsonConfig extends Vue {
   handleCreate () {
     this.isDialog = true
   }
-  async handleSubmit(){
-    this.jsonConfig.submitJson ()
+  async handleSubmit () {
+    this.jsonConfig.submitJson()
     let obj = JSON.parse(this.jsonConfig.json)
     console.log(obj)
     let objForm:any = {}
-    for(let i of this.options){
-      objForm[i.value]=i.label
+    for (let i of this.options) {
+      objForm[i.value] = i.label
     }
     let res: any = await createUpdate({
       // formkey: this.search.formData.formKey,
@@ -190,7 +190,7 @@ export default class JsonConfig extends Vue {
       formConf: JSON.stringify(obj.formConf),
       renderConf: JSON.stringify(obj.renderConf)
     })
-    this.options.push({label: this.formCreateData.formName, value: this.formCreateData.formKey })
+    this.options.push({ label: this.formCreateData.formName, value: this.formCreateData.formKey })
     // this.searchData[0].options.push({label: this.formCreateData.formName, value: this.formCreateData.formKey })
     // console.log('this.search.formData-->>',this.search.formData)
     // this.search.formData.formKey = this.formCreateData.formKey

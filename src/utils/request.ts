@@ -5,40 +5,42 @@
  * @description axios实例,返回promise对象
  */
 
-import axios from 'axios'
 import { Message } from 'zyb-pc-ui'
 import Cookies from 'js-cookie'
-
-// 权限相关API接口
+import axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios'
 const qs = require('qs')
 
-// 开发和测试环境变量
-const envArray: string[] = ['development', 'test']
-
 // axios 默认配置
-export const AXIOS_DEFAULT_CONFIG = {
+const baseURL: string =
+  process.env.NODE_ENV === 'development'
+    ? 'testAddress'
+    : process.env.VUE_APP_BASE_URL || '/'
+export const AXIOS_DEFAULT_CONFIG: AxiosRequestConfig = {
+  baseURL: baseURL,
   withCredentials: true, // 是否允许带cookie这些
   timeout: 20000,
   maxContentLength: 2000,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Access-Control-Allow-Origin': '*'
   }
 }
 // 创建axios实例
-const service = axios.create(AXIOS_DEFAULT_CONFIG)
-
+const service: AxiosInstance = axios.create(AXIOS_DEFAULT_CONFIG)
 // request interceptors
 service.interceptors.request.use(
-  requestObj => {
+  (requestObj: AxiosRequestConfig) => {
     // 自定义请求拦截逻辑，可以处理权限，请求发送监控等
-    if (requestObj.method === 'post') {
+    if (
+      requestObj.method === 'post' &&
+      (requestObj.url || '').indexOf('/tools/uploadfile') === -1
+    ) {
       requestObj.data = qs.stringify(requestObj.data)
     }
-
     // 获取存储在cookie中的值，如果存在则在每个ajax请求的头部加上
     let tokens: string | null = null
     document.cookie &&
-      document.cookie.split(';').forEach((e, i) => {
+      document.cookie.split(';').forEach(e => {
         if (e && e.split('=')[0].trim() === 'token') {
           tokens = e.split('=')[1]
         }
@@ -48,39 +50,27 @@ service.interceptors.request.use(
     }
     let api: string = requestObj.url || ''
     requestObj.url = returnApi(api)
+    // console.log(requestObj)
+
     return requestObj
   },
   error => {
     // 自定义发送请求失败逻辑，断网，请求发送监控等
     // ...
     console.error(error) // for debug
-    return Promise.reject(error)
+    return Promise.reject(new Error('error'))
   }
 )
 
 // response interceptors
 service.interceptors.response.use(
-  response => {
-    let res = response.data
+  (response: AxiosResponse) => {
+    let res: any = response.data
     // 测试环境和开发环境 打印请求输出
-    if (envArray.indexOf(process.env.NODE_ENV) !== -1) {
-      console.log(res)
+    if (process.env.mode !== 'production') {
+      // console.log('🍎🍎🍎--》》', res)
     }
-
-    if (res.errNo === 0) {
-      return res.data
-    } else if (res.errNo === 10003) {
-      // 未登录
-      window.location.href =
-        'https://cas.zuoyebang.cc/login?service=' + encodeURIComponent('http://sellmis.zuoyebang.cc/static/permission/index.html?#/system-manage/index')
-    } else {
-      Message({
-        message: res.errStr,
-        type: 'error',
-        duration: 3 * 1000
-      })
-      return Promise.reject(new Error('error'))
-    }
+    return checkState(res)
   },
   error => {
     console.log(error) // for debug
@@ -89,13 +79,13 @@ service.interceptors.response.use(
       type: 'error',
       duration: 3 * 1000
     })
-    return Promise.reject(error)
+    return Promise.reject(new Error('error'))
   }
 )
-
 // 如果是本地请求测试服务器地址 请修改cookie
-let PHPSESSID = 'ST-1536226312rc9zfQtFADqDGy7qw1p'
-let ZYBUUAP = 'UUAP_UHwGXph4XL74USPRBXtscF0dvXnhxRuZxwoxg7_j23N5v85meUAfIuiZwRQ_7tmq'
+let PHPSESSID = 'ST-1565422682reQFVNtYYrHI5zh52NB'
+let ZYBUUAP =
+  'UUAP_Q3oNWpxwXrDbQyPQPGR7fl0dvXkAwBOZxwoxg4lqBXV6ovYzDWhmI8OLzhoz1ei_'
 
 // 返回生成的API接口
 function returnApi (api: string): string {
@@ -103,13 +93,50 @@ function returnApi (api: string): string {
     console.error('api is undefined')
     return ''
   }
-
   if (process.env.NODE_ENV === 'development') {
     Cookies.set('PHPSESSID', PHPSESSID)
     Cookies.set('ZYBUUAP', ZYBUUAP)
   }
-  return `${process.env.VUE_APP_HOSTAPI}${api}`
+  // return `${AUTHOR_API_DOMAIN[process.env.NODE_ENV]}${api}`
+  return `${api}`
 }
-
+function checkState (res: any): any {
+  switch (res.errNo) {
+    case 0:
+      return res.data
+    case 3:
+      Message({
+        showClose: true,
+        message: '用户未登录，自动跳转到登录页面~~',
+        type: 'error'
+      })
+      window.location = res.data.loginUrl
+      break
+    case -1001:
+      Message({
+        showClose: true,
+        message: '登录已过期，请重新登录',
+        type: 'error'
+      })
+      window.location = res.data.loginUrl
+      break
+    case -1005:
+      Message({
+        showClose: true,
+        message: '用户未登录，自动跳转到登录页面~~',
+        type: 'error'
+      })
+      console.log('==========loginUrl', res.data)
+      window.location = res.data.loginUrl
+      break
+    default:
+      Message({
+        message: res.errstr,
+        type: 'error',
+        duration: 3 * 1000
+      })
+      return Promise.reject(new Error('error'))
+  }
+}
 // export
 export default service

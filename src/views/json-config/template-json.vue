@@ -1,5 +1,5 @@
 <template>
-  <div class="json_page">  
+  <div class="json_page">
     <div class="json_config">
       <el-tree
         :data="dataTree"
@@ -115,7 +115,7 @@
         type="primary"
         size="mini"
         title="转成JSON"
-      ><i class="zyb-icon-direction-arrow-down"></i></el-button>      
+      ><i class="zyb-icon-direction-arrow-down"></i></el-button>
     </div>
     <div class="json_show">
       <el-input
@@ -462,9 +462,7 @@ export default class TemplateJson extends Vue {
           isEdit: true
         })
       }
-    }
-    // 节点类型变为object时，父节点若为array，节点的key不可编辑
-    else if (data.selectType === 'object') {
+    } else if (data.selectType === 'object') {
       let edit: boolean
       if (data.parent === 'array' || !data.parent) {
         edit = false
@@ -508,9 +506,9 @@ export default class TemplateJson extends Vue {
           element.isEdit = true
         })
       }
-    }
+    } else {
     // 节点类型为array时，父节点若为array，节点的key不可编辑
-    else {
+
       let edit: boolean
       console.log('children.parent--->>', data.parent)
       if (data.parent === 'array' || !data.parent) {

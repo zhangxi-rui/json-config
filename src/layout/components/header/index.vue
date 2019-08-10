@@ -104,23 +104,21 @@ export default class AppHeader extends Vue {
   created () {
     // let res = this.GetUserInfo()
     // console.log('sdafasfss--->>>',res)
-    // this.GetUserInfo().then((res: any) => {
-    //   console.log(res)
-    //   let { memberId, uName, realName, phone, email, employeeId, datetime, platformList } = res
-    //   this.platformList = platformList
-    //   this.userInfo = {
-    //     memberId,
-    //     uName,
-    //     realName,
-    //     phone,
-    //     email,
-    //     employeeId,
-    //     datetime
-    //   }
-
-
-    // })
-    console.log('this.userInfo---->>',this.userInfo)
+    this.GetUserInfo().then((res: any) => {
+      console.log(res)
+      let { memberId, uName, realName, phone, email, employeeId, datetime, platformList } = res
+      this.platformList = platformList
+      this.userInfo = {
+        memberId,
+        uName,
+        realName,
+        phone,
+        email,
+        employeeId,
+        datetime
+      }
+    })
+    console.log('this.userInfo---->>', this.userInfo)
   }
 
   // methods

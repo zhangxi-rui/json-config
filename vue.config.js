@@ -6,7 +6,7 @@ let BuildUploader = require('./build/build-uploader.js')
 const SERVER_LIST = require('./build/server-list.js')
 const { getArgv, assetsPath } = require('./build/utils.js')
 const merge = require('webpack-merge')
-
+let argv = require('yargs-parser')(process.argv.slice(2))
 const port = 8081
 const title = pkg.title
 
@@ -53,22 +53,14 @@ module.exports = {
     },
     proxy: {
       // yapi mock
-      '/paybalance': {
-        target: 'http://yapi.afpai.com/mock/274/',
+      '^/testAddress': {
+        target: (process.env.NODE_ENV === 'development' && argv.config) ?  `http://${argv.config}.suanshubang.com/` : 'http://yapi.afpai.com/mock/274/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
-          '^/mock': '/'
+          '^/testAddress': '/'
         }
       }
     }
-    // before (app) {
-    //   apiMocker(app, path.resolve('./mocker/index.js'), {
-    //     proxy: {
-    //       '/mock/*': `http://localhost:${port}/`
-    //     },
-    //     changeHost: true
-    //   })
-    // }
   }
 }
