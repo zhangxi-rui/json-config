@@ -207,10 +207,10 @@ export default class TemplateJson extends Vue {
   // jsonObj: any
   // 绑定输入框与键盘输入数据的属性名
   handleInputKey ($event: any, node: any, data: any) {
-    console.log($event)
+    // console.log($event)
     // console.log(data)
     data.nodeKey = $event.target.innerText
-    console.log(this.dataTree)
+    // console.log(this.dataTree)
     // data.nodeValue = $event.target.innerText
   }
   // 绑定输入框与键盘输入数据的属性值
@@ -238,11 +238,11 @@ export default class TemplateJson extends Vue {
   }
   // json转dataTree
   objectOneLayer (res: any) {
-    console.log('res----->>>', res)
+    // console.log('res----->>>', res)
     let dataTreeChild: any = []
     let keyArray = Object.keys(res)
     keyArray.forEach((key: any) => {
-      console.log('类型--->>', Object.prototype.toString.call(res[key]))
+      // console.log('类型--->>', Object.prototype.toString.call(res[key]))
       if (Object.prototype.toString.call(res[key]) === '[object Object]') {
         if (Object.prototype.toString.call(res) === '[object Object]') {
           dataTreeChild.push({
@@ -350,14 +350,14 @@ export default class TemplateJson extends Vue {
   }
   jsonCreate (dataTree: any) {
     let jsonObject: any = {}
-    console.log('本次循环的数组dataTree--->>>', dataTree)
+    // console.log('本次循环的数组dataTree--->>>', dataTree)
     dataTree.forEach((value: any) => {
       if (value.selectType) {
-        console.log('本次循环的value--->>', value)
+        // console.log('本次循环的value--->>', value)
 
-        console.log('value.children--->>', value.children)
+        // console.log('value.children--->>', value.children)
         if (value.selectType === 'object') {
-          console.log('objjjjjjjjjjjjjj')
+          // console.log('objjjjjjjjjjjjjj')
           if (value.parent !== 'array') {
             jsonObject[value.nodeKey] = this.jsonCreate(value.children)
           } else {
@@ -377,28 +377,28 @@ export default class TemplateJson extends Vue {
             // jsonObject = []
             jsonObject = value.nodeValue
           }
-          console.log('无children----->>', jsonObject)
+          // console.log('无children----->>', jsonObject)
           return jsonObject
         }
       } else {
         return jsonObject
       }
     })
-    console.log('jsonObject---->>', jsonObject)
+    // console.log('jsonObject---->>', jsonObject)
     return jsonObject
   }
   // 提交json的修改，提交按钮的事件
   submitJson () {
-    console.log('this.dataTree----->>', this.dataTree)
+    // console.log('this.dataTree----->>', this.dataTree)
     if (!this.dataTree[0].children) {
       this.jsonObj = this.dataTree[0].nodeValue
     } else {
       let obj = this.jsonCreate(this.dataTree)
       this.jsonObj = obj[this.dataTree[0].nodeKey]
-      console.log('this.jsonObj----->>>', this.jsonObj)
+      // console.log('this.jsonObj----->>>', this.jsonObj)
     }
     this.json = JSON.stringify(this.jsonObj, null, 4)
-    console.log('this.json---->>', this.json)
+    // console.log('this.json---->>', this.json)
   }
   // 下面均为样式中添加或修改数据结构类型的逻辑函数
   findItemIndex (node: any, data: any): any {
