@@ -306,7 +306,6 @@ export default class JsonConfig extends Vue {
     let res: any = await getModuleConfig({ systemId: this.$route.meta.systemId, id: this.formKey })
     this.json = JSON.stringify(res, null, 4)
     // console.log('this.jsonObj----->>', this.json)
-
     this.jsonConfig.dataTreeCreate(res)
   }
   // async getModuleConfig (formData: any) {

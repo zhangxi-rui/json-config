@@ -7,7 +7,6 @@
         :default-expand-all="true"
         :indent="20"
       >
-
         <span
           class='tree-node'
           slot-scope="{node,data}"
@@ -25,7 +24,7 @@
               >
               </p>
 
-              <span v-if="data.selectType==='string'"> : </span>
+              <span v-if="data.selectType==='string'||data.selectType==='auto'"> : </span>
               <span
                 v-if="data.selectType==='object'"
                 style="color:red;display:inline-block;padding-left:10px"
@@ -35,9 +34,10 @@
                 style="color:red;display:inline-block;padding-left:10px"
               > <span>[</span><span>{{data.children.length-1}}</span>]<span></span></span>
               <p
-                v-if="data.selectType==='string'"
+                v-if="data.selectType==='string'||data.selectType==='auto'"
                 contenteditable="true"
                 class="text-input"
+                :class="[data.textColor]"
                 v-text="data.nodeValue"
                 @blur="handleInputValue(...arguments, node, data)"
               ></p>
@@ -147,6 +147,7 @@ const dataTree = [
     selectType: 'object',
     nodeType: 'root',
     isEdit: false,
+    textColor: '',
     children: [
       // {
       //   id: 9,
@@ -191,6 +192,10 @@ let selectType = [
   {
     label: 'array',
     value: 'array'
+  },
+  {
+    label: 'auto',
+    value: 'auto'
   }
 ]
 
@@ -198,43 +203,71 @@ let selectType = [
   name: 'template-json'
 })
 export default class TemplateJson extends Vue {
-  dataTree = dataTree
+  dataTree = JSON.parse(JSON.stringify(dataTree))
   selectType = selectType
   jsonObj: any = ''
   // jsonObj: any = ''
   @Prop(String) json: any
   // isEdit = true
   // jsonObj: any
+  // 添加改变dataTree数据的对象
+  dataTreeObj (nodeKey: string|number, nodeValue: string|number|boolean, selectType: string, nodeType: string, isEdit: boolean, textColor: string, parent?: string) {
+    if (parent) {
+      return {
+        id: id++,
+        nodeKey,
+        nodeValue,
+        selectType,
+        parent,
+        nodeType,
+        isEdit,
+        textColor
+      }
+    }
+    return {
+      id: id++,
+      nodeKey,
+      nodeValue,
+      selectType,
+      nodeType,
+      isEdit,
+      textColor
+    }
+  }
   // 绑定输入框与键盘输入数据的属性名
   handleInputKey ($event: any, node: any, data: any) {
-    // console.log($event)
-    // console.log(data)
     data.nodeKey = $event.target.innerText
-    // console.log(this.dataTree)
-    // data.nodeValue = $event.target.innerText
   }
-  // 绑定输入框与键盘输入数据的属性值
+  // 绑定输入框与键盘输入数据的属性值，auto值的判断
   handleInputValue ($event: any, node: any, data: any) {
-    // console.log($event.target.innerText)
-    // console.log(data)
-    data.nodeValue = $event.target.innerText
-    // data.nodeValue = $event.target.innerText
+    console.log('$event.target.innerText---', $event.target.innerText)
+    if (data.nodeType === 'string') {
+      data.nodeValue = $event.target.innerText
+      data.textColor = 'text-green'
+    } else {
+      let str = $event.target.innerText
+      if (str === 'true') {
+        data.nodeValue = true
+        data.textColor = 'text-blue'
+      } else if (str === 'false') {
+        data.nodeValue = false
+        data.textColor = 'text-blue'
+      } else if (!isNaN(str)) {
+        data.nodeValue = Number(str)
+        data.textColor = 'text-yellow'
+      } else {
+        data.nodeValue = str
+        data.textColor = 'text-green'
+      }
+    }
   }
   // 模拟hover，鼠标放到添加时高亮
   handlerMouseEnter (event: any, node: any, data: any) {
-    // console.log('触发了enter')
     event.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.backgroundColor = 'yellow'
-    // console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode)
-    // console.log(node)
   }
   // 模拟hover，鼠标移出添加时去除高亮
   handlerMouseLeave (event: any, node: any, data: any) {
-    // console.log('触发了leave')
-
     event.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.backgroundColor = ''
-    // console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode.style)
-
-    // console.log(node)
   }
   // json转dataTree
   objectOneLayer (res: any) {
@@ -245,57 +278,65 @@ export default class TemplateJson extends Vue {
       // console.log('类型--->>', Object.prototype.toString.call(res[key]))
       if (Object.prototype.toString.call(res[key]) === '[object Object]') {
         if (Object.prototype.toString.call(res) === '[object Object]') {
-          dataTreeChild.push({
-            id: id++,
-            nodeKey: key,
-            nodeValue: '',
-            selectType: 'object',
-            parent: 'object',
-            nodeType: 'child',
-            isEdit: true,
-            children: this.objectOneLayer(res[key])
-          })
+          dataTreeChild.push(
+            Object.assign(
+              this.dataTreeObj(key, '', 'object', 'child', true, '', 'object'),
+              { children: this.objectOneLayer(res[key]) }
+            )
+          )
         } else {
-          dataTreeChild.push({
-            id: id++,
-            nodeKey: key,
-            nodeValue: '',
-            selectType: 'object',
-            parent: 'array',
-            nodeType: 'child',
-            isEdit: false,
-            children: this.objectOneLayer(res[key])
-          })
+          dataTreeChild.push(
+            Object.assign(
+              this.dataTreeObj(key, '', 'object', 'child', false, '', 'array'),
+              { children: this.objectOneLayer(res[key]) }
+            )
+          )
         }
       } else if (Object.prototype.toString.call(res[key]) === '[object Array]') {
         if (Object.prototype.toString.call(res) === '[object Object]') {
-          dataTreeChild.push({
-            id: id++,
-            nodeKey: key,
-            nodeValue: '',
-            selectType: 'array',
-            parent: 'object',
-            nodeType: 'child',
-            isEdit: true,
-            children: this.objectOneLayer(res[key])
-          })
+          dataTreeChild.push(
+            Object.assign(
+              this.dataTreeObj(key, '', 'array', 'child', true, '', 'object'),
+              { children: this.objectOneLayer(res[key]) }
+            )
+          )
+          // dataTreeChild.push({
+          //   id: id++,
+          //   nodeKey: key,
+          //   nodeValue: '',
+          //   selectType: 'array',
+          //   parent: 'object',
+          //   nodeType: 'child',
+          //   isEdit: true,
+          //   children: this.objectOneLayer(res[key])
+          // })
         } else {
-          dataTreeChild.push({
-            id: id++,
-            nodeKey: key,
-            nodeValue: '',
-            selectType: 'array',
-            parent: 'array',
-            nodeType: 'child',
-            isEdit: false,
-            children: this.objectOneLayer(res[key])
-          })
+          dataTreeChild.push(
+            Object.assign(
+              this.dataTreeObj(key, '', 'array', 'child', false, '', 'array'),
+              { children: this.objectOneLayer(res[key]) }
+            )
+          )
         }
       } else {
-        if (Object.prototype.toString.call(res) === '[object Object]') {
-          dataTreeChild.push({ id: id++, nodeKey: key, nodeValue: res[key], selectType: 'string', parent: 'object', nodeType: 'child', isEdit: true })
+        let textColor: string
+        if (Object.prototype.toString.call(res[key]) === '[object String]') {
+          textColor = 'text-green'
+        } else if (Object.prototype.toString.call(res[key]) === '[object Boolean]') {
+          textColor = 'text-blue'
         } else {
-          dataTreeChild.push({ id: id++, nodeKey: key, nodeValue: res[key], selectType: 'string', parent: 'array', nodeType: 'child', isEdit: false })
+          textColor = 'text-yellow'
+        }
+        if (Object.prototype.toString.call(res) === '[object Object]') {
+          console.log('父亲为object的nodekey与nodeValue:', key, res[key])
+          dataTreeChild.push(
+            this.dataTreeObj(key, res[key], 'auto', 'child', true, textColor, 'object')
+          )
+        } else {
+          console.log('父亲为array的nodekey与nodeValue:', key, res[key])
+          dataTreeChild.push(
+            this.dataTreeObj(key, res[key], 'auto', 'child', false, textColor, 'array')
+          )
         }
       }
     })
@@ -303,10 +344,22 @@ export default class TemplateJson extends Vue {
     return dataTreeChild
   }
   dataTreeCreate (res: any) {
-    if (Object.prototype.toString.call(res) === '[object String]' || Object.prototype.toString.call(res) === '[object Number]') {
+    this.dataTree = JSON.parse(JSON.stringify(dataTree))
+    if (Object.prototype.toString.call(res) === '[object String]') {
       this.dataTree[0].nodeKey = 'string'
       this.dataTree[0].nodeValue = res
       this.dataTree[0].selectType = 'string'
+      this.dataTree[0].textColor = 'text-green'
+    } else if (Object.prototype.toString.call(res) === '[object Number]') {
+      this.dataTree[0].nodeKey = 'auto'
+      this.dataTree[0].nodeValue = res
+      this.dataTree[0].selectType = 'auto'
+      this.dataTree[0].textColor = 'text-yellow'
+    } else if (Object.prototype.toString.call(res) === '[object Boolean]') {
+      this.dataTree[0].nodeKey = 'auto'
+      this.dataTree[0].nodeValue = res
+      this.dataTree[0].selectType = 'auto'
+      this.dataTree[0].textColor = 'text-blue'
     } else {
       if (Object.prototype.toString.call(res) === '[object Object]') {
         this.dataTree[0].nodeKey = 'object'
@@ -340,7 +393,20 @@ export default class TemplateJson extends Vue {
     dataTree.children.forEach((data: any, index: number) => {
       if (index < dataTree.children.length - 1) {
         if (!data.children) {
-          jsonArray.push(data.nodeValue)
+          // console.log('我的父亲是array进的终点')
+          if (data.selectType === 'number') {
+            // console.log('parseInt(data.nodeValue).toString()--->>', parseInt(data.nodeValue).toString())
+            console.log('data.nodeValue--->>', Object.prototype.toString.call(data.nodeValue))
+            if (Object.prototype.toString.call(data.nodeValue) === '[object Number]') {
+              jsonArray.push(data.nodeValue)
+              // console.log('aaaaaaaa----', parseInt(data.nodeValue))
+            } else {
+              alert('number类型填写错误')
+            }
+          } else {
+            jsonArray.push(data.nodeValue)
+          }
+          // jsonArray.push(data.nodeValue)
         } else {
           jsonArray[data.nodeKey] = this.jsonCreate([data])
         }
@@ -372,9 +438,21 @@ export default class TemplateJson extends Vue {
         } else {
           // 递归终点，没有children
           if (value.parent === 'object') {
+            // console.log('我的父亲是object进的终点')
+            // if (value.selectType === 'number') {
+            //   console.log('parseInt(value.nodeValue).toString()--->>', parseInt(value.nodeValue).toString())
+            //   console.log('value.nodeValue--->>', value.nodeValue)
+            //   console.log(parseInt(value.nodeValue).toString() === value.nodeValue)
+            //   if (Object.prototype.toString.call(value.nodeValue) === '[object Number]') {
+            //     jsonObject[value.nodeKey] = value.nodeValue
+            //     console.log('bbbbbbbbbb---', jsonObject[value.nodeKey])
+            //   } else {
+            //     alert('number类型填写错误')
+            //   }
+            // } else {
             jsonObject[value.nodeKey] = value.nodeValue
+            // }
           } else {
-            // jsonObject = []
             jsonObject = value.nodeValue
           }
           // console.log('无children----->>', jsonObject)
@@ -397,6 +475,7 @@ export default class TemplateJson extends Vue {
       this.jsonObj = obj[this.dataTree[0].nodeKey]
       // console.log('this.jsonObj----->>>', this.jsonObj)
     }
+    console.log('this.jsonObj----->>>', this.jsonObj)
     this.json = JSON.stringify(this.jsonObj, null, 4)
     // console.log('this.json---->>', this.json)
   }
@@ -414,8 +493,6 @@ export default class TemplateJson extends Vue {
   }
   // 添加节点
   add (event: any, node: any, data: any) {
-    // console.log('触发了CLICK')
-    let newChildObject = { id: id++, nodeKey: 'key', nodeValue: 'value', selectType: 'string', parent: 'object', nodeType: 'child', isEdit: true }
     let newChildArray: object
     if (!node.parent.data.children) {
       this.$set(node.parent.data, 'children', [])
@@ -424,11 +501,10 @@ export default class TemplateJson extends Vue {
     // let nodeAdd = node.parent.data.children.pop()
     if (node.parent.data.selectType === 'object') {
       // node.parent.data.children.push(newChildObject, { nodeType: 'add' })
-      node.parent.data.children.splice(index, 0, newChildObject)
+      node.parent.data.children.splice(index, 0, this.dataTreeObj('key', 'value', 'auto', 'child', true, 'text-green', 'object'))
     } else {
       let arrayId = node.parent.data.children.length - 1
-      newChildArray = { id: id++, nodeKey: arrayId, nodeValue: 'value', selectType: 'string', parent: 'array', nodeType: 'child', isEdit: false }
-      node.parent.data.children.splice(index, 0, newChildArray)
+      node.parent.data.children.splice(index, 0, this.dataTreeObj(arrayId, 'value', 'auto', 'child', false, 'text-green', 'array'))
       // node.parent.data.children.push(newChildArray, { nodeType: 'add' })
     }
   }
@@ -436,9 +512,19 @@ export default class TemplateJson extends Vue {
   copy (node: any, data: any) {
     console.log('复制类型---->>', data)
     const { index, children } = this.findItemIndex(node, data)
+    // console.log('children---->>', children)
+    // console.log('children.par---->>', node.parent)
     let obj = JSON.parse(JSON.stringify(data))
     obj.id = id++
     children.splice(index + 1, 0, obj)
+    if (node.parent.data.selectType === 'array') {
+      children.forEach((value: any, index: number) => {
+        // console.log('index------>>>', index)
+        if (value.nodeKey) {
+          value.nodeKey = index
+        }
+      })
+    }
   }
   // 改变节点类型
   dataTreeChange (node: any, data: any) {
@@ -449,18 +535,28 @@ export default class TemplateJson extends Vue {
     if (data.selectType === 'string') {
       // 为根节点时，根节点变为string，key不可编辑
       if (!data.parent) {
-        children.splice(index, 1, { id: id++, nodeKey: 'sting', nodeValue: 'value', selectType: 'string', nodeType: 'root', isEdit: false })
+        children.splice(index, 1, this.dataTreeObj('string', 'value', 'string', 'root', false, 'text-green'))
       } else {
         // 为子节点时，根节点变为string，key可编辑
-        children.splice(index, 1, {
-          id: id++,
-          nodeKey: 'key',
-          nodeValue: 'value',
-          selectType: 'string',
-          parent: node.parent.data.selectType,
-          nodeType: 'child',
-          isEdit: true
-        })
+        // 父节点类型为array时，nodekey不变，不可编辑
+        if (data.parent === 'array') {
+          let key = data.nodeKey
+          children.splice(index, 1, this.dataTreeObj(key, 'value', 'string', 'child', false, 'text-green', node.parent.data.selectType))
+        } else {
+          children.splice(index, 1, this.dataTreeObj('key', 'value', 'string', 'child', true, 'text-green', node.parent.data.selectType))
+        }
+      }
+    } else if (data.selectType === 'auto') {
+      if (!data.parent) {
+        children.splice(index, 1, this.dataTreeObj('string', 'value', 'auto', 'root', false, 'text-green'))
+      } else {
+        // 为子节点时，根节点变为string，key可编辑
+        if (data.parent === 'array') {
+          let key = data.nodeKey
+          children.splice(index, 1, this.dataTreeObj(key, 'value', 'auto', 'child', false, 'text-green', node.parent.data.selectType))
+        } else {
+          children.splice(index, 1, this.dataTreeObj('key', 'value', 'auto', 'child', true, 'text-green', node.parent.data.selectType))
+        }
       }
     } else if (data.selectType === 'object') {
       let edit: boolean
@@ -473,28 +569,16 @@ export default class TemplateJson extends Vue {
       if (!data.children) {
         // 操作节点为根节点
         if (!data.parent) {
-          children.splice(index, 1, {
-            id: id++,
-            nodeKey: 'object',
-            nodeValue: '',
-            selectType: 'object',
-            nodeType: 'root',
-            isEdit: edit,
-            children: [{ nodeType: 'add' }]
-          })
+          children.splice(index, 1, Object.assign(
+            this.dataTreeObj('object', '', 'object', 'root', edit, ''),
+            { children: [{ nodeType: 'add' }] }
+          ))
         } else {
           let key = data.nodeKey
-
-          children.splice(index, 1, {
-            id: id++,
-            nodeKey: key,
-            nodeValue: '',
-            selectType: 'object',
-            parent: node.parent.data.selectType,
-            nodeType: 'child',
-            isEdit: edit,
-            children: [{ nodeType: 'add' }]
-          })
+          children.splice(index, 1, Object.assign(
+            this.dataTreeObj(key, '', 'object', 'child', edit, '', node.parent.data.selectType),
+            { children: [{ nodeType: 'add' }] }
+          ))
         }
       } else {
         if (!data.parent) {
@@ -518,27 +602,16 @@ export default class TemplateJson extends Vue {
       }
       if (!data.children) {
         if (!data.parent) {
-          children.splice(index, 1, {
-            id: id++,
-            nodeKey: 'array',
-            nodeValue: '',
-            selectType: 'array',
-            nodeType: 'root',
-            isEdit: edit,
-            children: [{ nodeType: 'add' }]
-          })
+          children.splice(index, 1, Object.assign(
+            this.dataTreeObj('array', '', 'array', 'root', edit, ''),
+            { children: [{ nodeType: 'add' }] }
+          ))
         } else {
           let key = data.nodeKey
-          children.splice(index, 1, {
-            id: id++,
-            nodeKey: key,
-            nodeValue: '',
-            selectType: 'array',
-            parent: node.parent.data.selectType,
-            nodeType: 'child',
-            isEdit: edit,
-            children: [{ nodeType: 'add' }]
-          })
+          children.splice(index, 1, Object.assign(
+            this.dataTreeObj(key, '', 'array', 'child', edit, '', node.parent.data.selectType),
+            { children: [{ nodeType: 'add' }] }
+          ))
         }
       } else {
         if (!data.parent) {
@@ -603,7 +676,7 @@ export default class TemplateJson extends Vue {
   background-color: #f0f1f5;
 }
 .json_config .el-select .el-input {
-  width: 80px;
+  width: 90px;
 }
 .json_config .el-select .el-input__inner {
   background-color: #afb0b3;
@@ -643,7 +716,7 @@ export default class TemplateJson extends Vue {
 .json_config .flex {
   display: flex;
   align-items: center;
-  width: 185px;
+  width: 195px;
   background-color: aquamarine;
   padding-left: 5px;
 }
@@ -662,6 +735,15 @@ export default class TemplateJson extends Vue {
 .transform-json {
   display: block;
   padding-top: 20px;
+}
+.json_config .text-green {
+  color: green;
+}
+.json_config .text-blue {
+  color: blue;
+}
+.json_config .text-yellow {
+  color: #F78502;
 }
 /* .flex-left {
   flex: 1;

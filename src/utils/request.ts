@@ -83,9 +83,9 @@ service.interceptors.response.use(
   }
 )
 // 如果是本地请求测试服务器地址 请修改cookie
-let PHPSESSID = 'ST-1565419631rS-FQqQZLE93e5sYVLL'
+let PHPSESSID = 'ST-1565676844rLGrTYTk-HGQyeYDvNj'
 let ZYBUUAP =
-  'UUAP_Un0CU5dhW-moeSzKKnh8fV0dvXkA8cidxwoxgz73G3UggfJvPB1rL-u9xhMzuJbs'
+  'UUAP_Un0CU5dhW-moeSzKKnh8fV0dvXl3-yiYxwoxgzlDGXUjn_s8PU8DPemRpx0l5tOZ'
 
 // 返回生成的API接口
 function returnApi (api: string): string {
