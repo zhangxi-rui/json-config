@@ -206,8 +206,9 @@ export default class TemplateJson extends Vue {
   dataTree = JSON.parse(JSON.stringify(dataTree))
   selectType = selectType
   jsonObj: any = ''
+  json: any = ''
   // jsonObj: any = ''
-  @Prop(String) json: any
+  // @Prop(String) json: any
   // isEdit = true
   // jsonObj: any
   // 添加改变dataTree数据的对象
@@ -539,11 +540,12 @@ export default class TemplateJson extends Vue {
       } else {
         // 为子节点时，根节点变为string，key可编辑
         // 父节点类型为array时，nodekey不变，不可编辑
+        let key = data.nodeKey
+        let value = String(data.nodeValue)
         if (data.parent === 'array') {
-          let key = data.nodeKey
-          children.splice(index, 1, this.dataTreeObj(key, 'value', 'string', 'child', false, 'text-green', node.parent.data.selectType))
+          children.splice(index, 1, this.dataTreeObj(key, value, 'string', 'child', false, 'text-green', node.parent.data.selectType))
         } else {
-          children.splice(index, 1, this.dataTreeObj('key', 'value', 'string', 'child', true, 'text-green', node.parent.data.selectType))
+          children.splice(index, 1, this.dataTreeObj(key, value, 'string', 'child', true, 'text-green', node.parent.data.selectType))
         }
       }
     } else if (data.selectType === 'auto') {
@@ -551,11 +553,26 @@ export default class TemplateJson extends Vue {
         children.splice(index, 1, this.dataTreeObj('string', 'value', 'auto', 'root', false, 'text-green'))
       } else {
         // 为子节点时，根节点变为string，key可编辑
-        if (data.parent === 'array') {
-          let key = data.nodeKey
-          children.splice(index, 1, this.dataTreeObj(key, 'value', 'auto', 'child', false, 'text-green', node.parent.data.selectType))
+        let key = data.nodeKey
+        let value: string|number|boolean
+        let textColor: string
+        if (data.nodeValue === 'true') {
+          value = true
+          textColor = 'text-blue'
+        } else if (data.nodeValue === 'false') {
+          value = false
+          textColor = 'text-blue'
+        } else if (!isNaN(data.nodeValue)) {
+          value = Number(data.nodeValue)
+          textColor = 'text-yellow'
         } else {
-          children.splice(index, 1, this.dataTreeObj('key', 'value', 'auto', 'child', true, 'text-green', node.parent.data.selectType))
+          value = data.nodeValue
+          textColor = 'text-green'
+        }
+        if (data.parent === 'array') {
+          children.splice(index, 1, this.dataTreeObj(key, value, 'auto', 'child', false, textColor, node.parent.data.selectType))
+        } else {
+          children.splice(index, 1, this.dataTreeObj(key, value, 'auto', 'child', true, textColor, node.parent.data.selectType))
         }
       }
     } else if (data.selectType === 'object') {

@@ -32,7 +32,6 @@
       </div>
     </div>
     <template-json
-      :json='json'
       ref="jsonConfig"
     ></template-json>
     <el-dialog
@@ -100,7 +99,7 @@ export default class JsonConfig extends Vue {
   public searchData: any
   public operationBtns: any
   public systemId: string
-  public json: any
+  // public json: any
   public isDialog: boolean
   public formCreateData: CreateModuleData
   public options:Array<any>
@@ -114,7 +113,7 @@ export default class JsonConfig extends Vue {
     this.searchData = JSON.parse(JSON.stringify(searchData))
     this.operationBtns = operationBtns
     this.systemId = ''
-    this.json = ''
+    // this.json = ''
     this.isDialog = false
     this.formCreateData = {}
     this.options = []
@@ -228,7 +227,7 @@ export default class JsonConfig extends Vue {
     // console.log('this.search.formData-->>',this.search.formData)
     // this.search.formData.formKey = this.formCreateData.formKey
     this.formKey = this.formCreateData.formKey
-    this.json = JSON.stringify(obj, null, 4)
+    this.jsonConfig.json = JSON.stringify(obj, null, 4)
     this.jsonConfig.dataTreeCreate(obj)
     this.isDialog = false
     this.formCreateData = {}
@@ -297,14 +296,14 @@ export default class JsonConfig extends Vue {
     // this.searchData = JSON.parse(JSON.stringify(searchData))
     await this.getModules()
     // console.log(this.searchData)
-    this.json = ''
+    this.jsonConfig.json = ''
     this.jsonConfig.dataTreeCreate({})
   }
   async change () {
     // let obj = { systemId: this.$route.meta.systemId, formKey: formData.formKey }
     // this.getModuleConfig(formData)
     let res: any = await getModuleConfig({ systemId: this.$route.meta.systemId, id: this.formKey })
-    this.json = JSON.stringify(res, null, 4)
+    this.jsonConfig.json = JSON.stringify(res, null, 4)
     // console.log('this.jsonObj----->>', this.json)
     this.jsonConfig.dataTreeCreate(res)
   }
